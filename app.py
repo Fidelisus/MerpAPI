@@ -30,22 +30,26 @@ def getEvent(code):
 
     event = session.query(Event).filter_by(
         event_id=registration.event_id).one()
-    return jsonify(Event=event.serialize)
+    response = jsonify(Event=event.serialize)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # TODO check errors and make constraint that one user can't registry 2 times for the same event
 def participate(event_id, user_name, user_surname):
-    code = random.randint(0, 10**8)*10 + int(event_id)
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
 
     if not session.query(Event).filter_by(event_id=event_id).one():
         return "<h1>404</h1><p>The event could not be found.</p>", 404
 
+    code = random.randint(0, 10**8)*10 + int(event_id)
     add_participation = Participate(
         event_id=event_id, user_name=user_name, user_surname=user_surname, code=code)
     session.add(add_participation)
     session.commit()
-    return jsonify({'reservation_number': code})
+    response = jsonify({'reservation_number': code})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route("/api/events", methods=['GET'])
