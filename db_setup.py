@@ -27,7 +27,7 @@ class Event(Base):
      }
 
 class Participate(Base):
-    __tablename__ = 'event'
+    __tablename__ = 'participate'
 
     code = Column(Integer, primary_key=True)
     event_id = Column(Integer, primary_key=True)
