@@ -10,21 +10,23 @@ Base = declarative_base()
 dbRoute = 'sqlite:///event-collection.db'
 
 class Event(Base):
-  __tablename__ = 'event'
+    __tablename__ = 'event'
 
-  event_id = Column(Integer, primary_key=True)
-  start_date = Column(TIMESTAMP, nullable=False)
-  end_date = Column(TIMESTAMP, nullable=False)
-  thumbnail = Column(String(250))
+    event_id = Column(Integer, primary_key=True)
+    title = Column(String(250), nullable=False)
+    start_date = Column(TIMESTAMP)
+    end_date = Column(TIMESTAMP)
+    thumbnail = Column(String(250))
 
-  @property
-  def serialize(self):
-     return {
-        'event_id': self.title,
+    @property
+    def serialize(self):
+        return {
+        'event_id': self.event_id,
+        'title': self.title,
         'start_date': self.start_date,
         'end_date': self.end_date,
         'thumbnail': self.thumbnail,
-     }
+        }
 
 class Participate(Base):
     __tablename__ = 'participate'
