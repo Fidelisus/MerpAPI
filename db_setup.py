@@ -9,6 +9,7 @@ Base = declarative_base()
 
 dbRoute = 'sqlite:///event-collection.db'
 
+
 class Event(Base):
     __tablename__ = 'event'
 
@@ -21,12 +22,13 @@ class Event(Base):
     @property
     def serialize(self):
         return {
-        'event_id': self.event_id,
-        'title': self.title,
-        'start_date': self.start_date,
-        'end_date': self.end_date,
-        'thumbnail': self.thumbnail,
+            'event_id': self.event_id,
+            'title': self.title,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
+            'thumbnail': self.thumbnail,
         }
+
 
 class Participate(Base):
     __tablename__ = 'participate'
@@ -39,11 +41,12 @@ class Participate(Base):
     @property
     def serialize(self):
         return {
-        'code': self.code,
-        'event_id': self.event_id,
-        'user_name': self.user_name,
-        'user_surname': self.user_surname,
+            'code': self.code,
+            'event_id': self.event_id,
+            'user_name': self.user_name,
+            'user_surname': self.user_surname,
         }
+
 
 engine = create_engine(dbRoute)
 Base.metadata.create_all(engine)
