@@ -11,6 +11,9 @@ engine = create_engine('sqlite:///event-collection.db')
 Base.metadata.bind = engine
 
 
+# TODO Make correct CORS
+# TODO Add better error checking to all the methods (to hide how db is implemented)
+
 def getEvents():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
@@ -34,7 +37,25 @@ def getEvent(code):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-# TODO check errors and make constraint that one user can't registry 2 times for the same event
+def deleteEvent(code):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    registration = session.query(Participate).filter_by(code=code).one()
+
+    if not registration:
+        return "<h1>404</h1><p>The reservation could not be found.</p>", 404
+
+    event = session.query(Event).filter_by(
+        event_id=registration.event_id).one()
+
+    if event.start_date < start_date - timedelta(days=2):
+
+    response = jsonify(Event=event.serialize)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response    
+
+
+# TODO make constraint that one user can't registry 2 times for the same event
 def participate(event_id, user_name, user_surname):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
@@ -53,19 +74,19 @@ def participate(event_id, user_name, user_surname):
 
 
 @app.route("/api/events", methods=['GET'])
-def show_events():
+def showEvents():
     if request.method == 'GET':
         return getEvents()
 
 
 @app.route("/api/participate/<int:code>", methods=['GET'])
-def unregistrate_from_event(code):
+def unregistrateFromEvent(code):
     if request.method == 'GET':
         return getEvent(code)
 
 
 @app.route("/api/participate", methods=['POST'])
-def registrate_to_event():
+def registrateToEvent():
     if request.method == 'POST':
         event_id = request.get_json()['event_id']
         user_name = request.get_json()['user_name']
@@ -74,7 +95,7 @@ def registrate_to_event():
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def pageNotFound(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 

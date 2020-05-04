@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+
+	  <title>Magic events</title>
+	  
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+		<script type="module">
+			class Event {
+			  constructor(id, title, startDate, endDate, img) {
+			  	this.id = id;
+			    this.title = title;
+			    this.startDate= startDate;
+			    this.endDate= endDate;
+			    this.img= img;
+			  }
+			}
+
+			// fetch events from api
+
+			// test ---------------------
+			const event1 = new Event(1, "Event number one", "01-01-2020", "02-01-2020", "https://via.placeholder.com/150");
+			const event2 = new Event(2, "Event number two", "25-01-2020", "26-01-2020", "https://via.placeholder.com/150");
+			createEventElement(event1);
+			createEventElement(event2);
+			// end of test ---------------------
+
+			document.getElementById('registrationSubmitBtn').addEventListener("click", function() {
+
+				event.preventDefault();
+
+				const eventId = document.getElementById('registerInputEventId').value;
+				const userName = document.getElementById('registerInputName').value;
+				const userSurname = document.getElementById('registerInputSurname').value;
+				  
+			    if (validateIdInput(eventId) && validateTxtInput(userName) && validateTxtInput(userSurname)) {
+					sendJSON(eventId, userName, userSurname);
+			    }
+			});
+
+			function validateTxtInput(input) {
+				if (!input || input === "") {
+			        document.getElementById('error-info').innerText = `An error during the registration has occured, please try again`;
+			        return false;
+			      }
+			      else {
+			      	document.getElementById('error-info').innerText = ``;
+			      	return true;
+			      }
+			}
+			
+			function validateIdInput(input) {
+				if (!input) {
+			        document.getElementById('error-info').innerText = `An error during the registration has occured, please try again`;
+			        return false;
+			      }
+			      else {
+			      	document.getElementById('error-info').innerText = ``;
+			      	return true;
+			      }
+			}
+
+			function createEventElement(event) {
+			      const outerContainer = document.createElement('div');
+			      outerContainer.className = 'card col-md-3';
+
+			      const img = document.createElement('img');
+			      img.className = 'card-img-top';
+			      img.src = event.img;
+
+			      const innerContainer = document.createElement('div');
+			      innerContainer.className = 'card-body';
+
+			      const h5Title = document.createElement('h5');
+			      h5Title.className = 'card-title';
+			      h5Title.innerText = event.title
+
+			      const pDate = document.createElement('p');
+			      pDate.className = 'card-text';
+			      pDate.innerText = "dates: " + event.startDate + " - " + event.endDate;
+
+			      const buttonRegister = document.createElement('button');
+			      buttonRegister.className = 'btn btn-primary';
+			      buttonRegister.innerText = "Register";
+			      buttonRegister.href = event.img;
+			      buttonRegister.addEventListener("click", function() { registerForEvent(event); });
+
+			      outerContainer.appendChild(innerContainer);
+			      innerContainer.appendChild(img);
+			      innerContainer.appendChild(h5Title);
+			      innerContainer.appendChild(pDate);
+			      innerContainer.appendChild(buttonRegister);
+			      
+
+			      document.getElementById('events-row').appendChild(outerContainer);
+			  }
+
+			  function registerForEvent(event) {
+			  	$('#exampleModalCenter').modal('toggle');	
+			  	document.getElementById('registrationEventTitle').innerText = event.title;
+			  	document.getElementById('registerInputEventId').value = event.id;
+
+			  	// clear the form
+			  	document.getElementById('error-info').innerText = "";
+			  	document.getElementById('HTTPResultTxt').innerText = "";
+			  	document.getElementById('registerInputName').value = "";
+			  	document.getElementById('registerInputSurname').value = "";
+			  }
+
+
+				function sendJSON(id, name, surname) {
+		               
+		            let HTTPResult = document.getElementById('HTTPResultTxt'); 
+		               
+		            // Creating a XHR object 
+		            let xhr = new XMLHttpRequest(); 
+		            let url = "http://localhost:5000/api/events";
+		        
+		            // open a connection 
+		            xhr.open("POST", url, true); 
+		  
+		            // Set the request header i.e. which type of content you are sending 
+		            xhr.setRequestHeader("Content-Type", "application/json"); 
+		  
+		            // Create a state change callback 
+		            xhr.onreadystatechange = function () { 
+		                if (xhr.readyState === 4 && xhr.status === 200) { 
+		                    // Print received data from server 
+		                    HTTPResult.innerHTML = this.responseText; 
+		                } 
+		            };
+		            // Converting JSON data to string 
+		            var data = JSON.stringify({ "event_id": id, "user_name": name, "user_surname": surname}); 
+		  
+		            // Sending data with the request 
+		            xhr.send(data); 
+		        }
+
+		</script>
+	</head>
+
+	<div class="jumbotron">
+		<h1>Magic events</h1>
+		<p>Take a look at the list of our events!</p>
+	</div>
+
+	<div class="container">
+		<div class="row" id="events-row">
+		</div>
+	</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		    <form>
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLongTitle">Registration for <span id="registrationEventTitle"></span></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <form>
+		        <input type="hidden" id="registerInputEventId">
+				  <div class="form-group">
+				    <label for="exampleInputEmail1">Name</label>
+				    <input type="text" class="form-control" id="registerInputName" aria-describedby="emailHelp" placeholder="Enter your name">
+				  </div>
+				  <div class="form-group">
+				    <label for="exampleInputEmail1">Surname</label>
+				    <input type="text" class="form-control" id="registerInputSurname" aria-describedby="emailHelp" placeholder="Enter your surname">
+				  </div>
+				  <p id="error-info"></p>
+				  <p id="HTTPResultTxt"></p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="submit" class="btn btn-primary" id="registrationSubmitBtn">Submit</button>
+		      </div>
+		    </form>
+		    </div>
+		  </div>
+		</div>
+
+	</body>
+</html>
