@@ -32,7 +32,7 @@ class Participate(Base):
     __tablename__ = 'participate'
 
     code = Column(Integer, primary_key=True)
-    event_id = Column(Integer, primary_key=True)
+    event_id = Column(Integer, nullable=False)
     user_name = Column(String(20), nullable=False)
     user_surname = Column(String(20), nullable=False)
 
