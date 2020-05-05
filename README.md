@@ -18,3 +18,6 @@ I have tested it with postman.
 ### Frontend
 
 Unfortunately, I didn't have time to finish CORS policy. I run it using XAMPP. Unfortunatelly, requests don't work.
+
+# EDIT (After deadline)
+### By mistake I have deleted one line before last commit- that is why there is a problem with compilation. You can just delete the whole deleteEvent method (at line 40) and it will compile. Also, to populate the db you can run insertEvents.py.
