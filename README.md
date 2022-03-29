@@ -4,8 +4,6 @@ Backend is created using Python with Flask and sqlalchemy. To run it you have to
 You should use:
 python ./app.py
 
-I have marked some TODO- these are things I didn't have time to finish.
-
 ### Backend
 
 In backend there are 3 endpoints:
